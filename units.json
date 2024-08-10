@@ -1,0 +1,41 @@
+{
+    "units": [
+        {
+            "name": "Skeleton Warrior",
+            "weapon_skill": 2,
+            "ballistic_skill": 2,
+            "strength": 3,
+            "toughness": 3,
+            "wounds": 1,
+            "initiative": 2,
+            "attacks": 1,
+            "points": 4,
+            "defensiveModifiers": [
+                "Shield",
+                {
+                    "class": "RegenerationSave",
+                    "threshold": 6
+                }
+            ]
+        },
+        {
+            "name": "Skeleton Warrior with Light Armour",
+            "weapon_skill": 2,
+            "ballistic_skill": 2,
+            "strength": 3,
+            "toughness": 3,
+            "wounds": 1,
+            "initiative": 2,
+            "attacks": 1,
+            "points": 5,
+            "defensiveModifiers": [
+                "Shield",
+                "LightArmour",
+                {
+                    "class": "RegenerationSave",
+                    "threshold": 6
+                }
+            ]
+        }
+    ]
+}
