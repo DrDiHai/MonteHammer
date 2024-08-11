@@ -1,25 +1,13 @@
 """This module contains the HitStrategy class and its subclasses."""
 
-from abc import ABC, abstractmethod
+from strategies.roll_evaluation_strategy import RollEvaluationStrategy
 from combatants.combatant import Combatant
 
 
-class RegenerationStrategy(ABC):
-    """Abstract base class for all saving throw strategies."""
-
-    @abstractmethod
-    def calculate_regen(
-        self, attacker: Combatant, target: Combatant, roll: int
-    ) -> bool:
-        """Determine if the attacker hits the target based on the roll."""
-
-
-class DefaultRegenerationStrategy(RegenerationStrategy):
+class DefaultRegenerationStrategy(RollEvaluationStrategy):
     """Default saving throw strategy that pierces the targets armor on a roll of 1."""
 
-    def calculate_regen(
-        self, attacker: Combatant, target: Combatant, roll: int
-    ) -> bool:
+    def evaluate_roll(self, attacker: Combatant, target: Combatant, roll: int) -> bool:
         """Calculate if the roll hits based on the modified roll."""
         target_number = self.get_target_number()
         return roll >= target_number

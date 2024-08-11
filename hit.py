@@ -3,7 +3,7 @@ an attacker hits a target."""
 
 from combatants.combatant import Combatant
 from dieroll import rolld6
-from strategies.hit_strategy import HitStrategy
+from strategies.roll_evaluation_strategy import RollEvaluationStrategy
 from rules.rule import HitRollModifier, HitRerollModifier
 
 
@@ -13,7 +13,7 @@ class Hit:
         self._target = target
 
         # Retrieve strategy and modifiers from the attacker
-        self._strategy: HitStrategy = attacker._hit_strategy
+        self._strategy: RollEvaluationStrategy = attacker._hit_strategy
 
         # Combine roll modifiers from both attacker and target
         self._roll_modifiers = [
@@ -43,13 +43,13 @@ class Hit:
         # Perform the roll, apply modifiers, and check for hit
         roll = self._roll_and_apply_modifiers()
 
-        if self._strategy.calculate_hit(self._attacker, self._target, roll):
+        if self._strategy.evaluate_roll(self._attacker, self._target, roll):
             return True
 
         # If the initial roll failed, check if we should reroll
         if self._should_reroll(roll):
             roll = self._roll_and_apply_modifiers()
-            return self._strategy.calculate_hit(self._attacker, self._target, roll)
+            return self._strategy.evaluate_roll(self._attacker, self._target, roll)
 
         return False
 

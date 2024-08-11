@@ -3,7 +3,7 @@ an attacker hits a target."""
 
 from combatants.unit import Unit
 from dieroll import rolld6
-from strategies.regeneration_strategy import RegenerationStrategy
+from strategies.roll_evaluation_strategy import RollEvaluationStrategy
 from rules.rule import RegenerationSaveRollModifier, RegenerationSaveRerollModifier
 
 
@@ -13,7 +13,7 @@ class RegenerationSave:
         self._target = target
 
         # Retrieve strategy and modifiers from the attacker
-        self._strategy: RegenerationStrategy = attacker._regeneration_strategy
+        self._strategy: RollEvaluationStrategy = attacker._regeneration_strategy
 
         # Combine roll modifiers from both attacker and target
         offensive_modifiers = attacker.get_offensive_modifiers()
@@ -44,13 +44,13 @@ class RegenerationSave:
         # Perform the roll, apply modifiers, and check for hit
         roll = self._roll_and_apply_modifiers()
 
-        if self._strategy.calculate_regen(self._attacker, self._target, roll):
+        if self._strategy.evaluate_roll(self._attacker, self._target, roll):
             return True
 
         # If the initial roll failed, check if we should reroll
         if self._should_reroll(roll):
             roll = self._roll_and_apply_modifiers()
-            return self._strategy.calculate_regen(self._attacker, self._target, roll)
+            return self._strategy.evaluate_roll(self._attacker, self._target, roll)
 
         return False
 

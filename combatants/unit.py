@@ -1,9 +1,7 @@
 import importlib
 from typing import List, Optional, Any
 from combatants.combatant import Combatant
-from strategies.hit_strategy import HitStrategy
-from strategies.wound_strategy import WoundStrategy
-from strategies.save_strategy import SaveStrategy
+from strategies.roll_evaluation_strategy import RollEvaluationStrategy
 from rules.modifier import Modifier
 
 
@@ -12,7 +10,10 @@ class Unit(Combatant):
         self,
         **kwargs,  # Capture additional attributes
     ):
-        self._hit_strategy: HitStrategy = None
+        self._hit_strategy: RollEvaluationStrategy = None
+        self._wound_strategy: RollEvaluationStrategy = None
+        self._save_strategy: RollEvaluationStrategy = None
+        self._regeneration_strategy: RollEvaluationStrategy = None
         self._defensive_modifiers: List[Modifier] = []
         self._offensive_modifiers: List[Modifier] = []
 
@@ -61,16 +62,18 @@ class Unit(Combatant):
         """Calculate the damage this unit would deal to another unit using its strategy."""
         return self._hit_strategy.calculate_damage(self, other_unit)
 
-    def set_hit_strategy(self, hit_strategy: HitStrategy) -> None:
+    def set_hit_strategy(self, hit_strategy: RollEvaluationStrategy) -> None:
         self._hit_strategy = hit_strategy
 
-    def set_wound_strategy(self, wound_strategy: WoundStrategy) -> None:
+    def set_wound_strategy(self, wound_strategy: RollEvaluationStrategy) -> None:
         self._wound_strategy = wound_strategy
 
-    def set_save_strategy(self, save_strategy: SaveStrategy) -> None:
+    def set_save_strategy(self, save_strategy: RollEvaluationStrategy) -> None:
         self._save_strategy = save_strategy
 
-    def set_regeneration_strategy(self, regeneration_strategy: SaveStrategy) -> None:
+    def set_regeneration_strategy(
+        self, regeneration_strategy: RollEvaluationStrategy
+    ) -> None:
         self._regeneration_strategy = regeneration_strategy
 
     def add_defensive_modifier(self, modifier: Modifier) -> None:
