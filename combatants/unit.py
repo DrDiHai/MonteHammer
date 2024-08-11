@@ -14,6 +14,7 @@ class Unit(Combatant):
         self._wound_strategy: RollEvaluationStrategy = None
         self._save_strategy: RollEvaluationStrategy = None
         self._regeneration_strategy: RollEvaluationStrategy = None
+        self._ward_strategy: RollEvaluationStrategy = None
         self._defensive_modifiers: List[Modifier] = []
         self._offensive_modifiers: List[Modifier] = []
 
@@ -71,6 +72,9 @@ class Unit(Combatant):
     def set_save_strategy(self, save_strategy: RollEvaluationStrategy) -> None:
         self._save_strategy = save_strategy
 
+    def set_ward_strategy(self, ward_strategy: RollEvaluationStrategy) -> None:
+        self._ward_strategy = ward_strategy
+
     def set_regeneration_strategy(
         self, regeneration_strategy: RollEvaluationStrategy
     ) -> None:
@@ -111,6 +115,8 @@ class Unit(Combatant):
         wound_strategy = load_class("wound_strategy", wound_strategy_class_name)()
         save_strategy_class_name = data.pop("save_strategy", "DefaultSaveStrategy")
         save_strategy = load_class("save_strategy", save_strategy_class_name)()
+        ward_strategy_class_name = data.pop("ward_strategy", "DefaultWardStrategy")
+        ward_strategy = load_class("ward_strategy", ward_strategy_class_name)()
         regeneration_strategy_class_name = data.pop(
             "save_strategy", "DefaultRegenerationStrategy"
         )
@@ -154,6 +160,7 @@ class Unit(Combatant):
         unit.set_hit_strategy(hit_strategy)
         unit.set_wound_strategy(wound_strategy)
         unit.set_save_strategy(save_strategy)
+        unit.set_ward_strategy(ward_strategy)
         unit.set_regeneration_strategy(regeneration_strategy)
         for modifier in defensiveModifiers:
             unit.add_defensive_modifier(modifier)

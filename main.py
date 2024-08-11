@@ -4,6 +4,7 @@ from combatant_roll_evaluator.combatant_roll_evaluator import (
     Hit,
     HitWound,
     ArmourSave,
+    WardSave,
     RegenerationSave,
 )
 
@@ -23,6 +24,7 @@ if __name__ == "__main__":
             hits = 0
             wounds = 0
             unsaved_wounds = 0
+            unwarded_wounds = 0
             unregenerated_wounds = 0
             for _ in range(SAMPLESIZE):
                 hit = Hit(attacker, target)
@@ -34,6 +36,9 @@ if __name__ == "__main__":
                 armour_save = ArmourSave(attacker, target)
                 if armour_save.evaluate_roll():
                     unsaved_wounds += 1
+                ward_save = WardSave(attacker, target)
+                if ward_save.evaluate_roll():
+                    unwarded_wounds += 1
                 regeneration_save = RegenerationSave(attacker, target)
                 if regeneration_save.evaluate_roll():
                     unregenerated_wounds += 1
@@ -46,10 +51,21 @@ if __name__ == "__main__":
                 (wounds * hits * unsaved_wounds)
                 / (SAMPLESIZE * SAMPLESIZE * SAMPLESIZE)
             ) * attacks
+            raw_unwarded_rate = unwarded_wounds / SAMPLESIZE
+            unwarded_rate = (
+                (wounds * hits * unsaved_wounds * unwarded_wounds)
+                / (SAMPLESIZE * SAMPLESIZE * SAMPLESIZE * SAMPLESIZE)
+            ) * attacks
             raw_unregenerated_rate = unregenerated_wounds / SAMPLESIZE
             unregenerated_rate = (
-                (wounds * hits * unsaved_wounds * unregenerated_wounds)
-                / (SAMPLESIZE * SAMPLESIZE * SAMPLESIZE * SAMPLESIZE)
+                (
+                    wounds
+                    * hits
+                    * unsaved_wounds
+                    * unwarded_wounds
+                    * unregenerated_wounds
+                )
+                / (SAMPLESIZE * SAMPLESIZE * SAMPLESIZE * SAMPLESIZE * SAMPLESIZE)
             ) * attacks
 
             # Calculate the efficiency
@@ -71,6 +87,10 @@ if __name__ == "__main__":
             print(
                 f"Unsaved Rate      : {unsaved_rate:.2f} (Raw: {raw_unsaved_rate:.2f})"
             )
+            print(
+                f"Unwarded Rate      : {unwarded_rate:.2f} (Raw: {raw_unwarded_rate:.2f})"
+            )
+
             print(
                 f"Unregenerated Rate: {unregenerated_rate:.2f} (Raw: {raw_unregenerated_rate:.2f})"
             )

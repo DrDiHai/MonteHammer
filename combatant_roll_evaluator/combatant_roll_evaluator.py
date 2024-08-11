@@ -8,6 +8,7 @@ from rules.rule import RollModifierRule, RerollModifierRule
 from rules.rule import HitRollModifier, HitRerollModifier
 from rules.rule import WoundRollModifier, WoundRerollModifier
 from rules.rule import SaveRollModifier, SaveRerollModifier
+from rules.rule import WardSaveRollModifier, WardSaveRerollModifier
 from rules.rule import RegenerationSaveRollModifier, RegenerationSaveRerollModifier
 
 
@@ -20,6 +21,7 @@ class CombatantRollEvaluator:
         target: Combatant,
         roll_modifier_class: RollModifierRule,
         reroll_modifier_class: RerollModifierRule,
+        strategy_name: str,
     ):
         self._attacker = attacker
         self._target = target
@@ -27,7 +29,7 @@ class CombatantRollEvaluator:
         self._reroll_modifiers: list[RerollModifierRule] = []
 
         # Retrieve strategy and modifiers from the attacker
-        self._strategy: RollEvaluationStrategy = attacker._hit_strategy
+        self._strategy: RollEvaluationStrategy = getattr(attacker, strategy_name)
 
         # Combine roll modifiers from both attacker and target
         self._roll_modifiers = [
@@ -84,17 +86,34 @@ class CombatantRollEvaluator:
 
 class Hit(CombatantRollEvaluator):
     def __init__(self, attacker: Combatant, target: Combatant):
-        super().__init__(attacker, target, HitRollModifier, HitRerollModifier)
+        super().__init__(
+            attacker, target, HitRollModifier, HitRerollModifier, "_hit_strategy"
+        )
 
 
 class HitWound(CombatantRollEvaluator):
     def __init__(self, attacker: Combatant, target: Combatant):
-        super().__init__(attacker, target, WoundRollModifier, WoundRerollModifier)
+        super().__init__(
+            attacker, target, WoundRollModifier, WoundRerollModifier, "_wound_strategy"
+        )
 
 
 class ArmourSave(CombatantRollEvaluator):
     def __init__(self, attacker: Combatant, target: Combatant):
-        super().__init__(attacker, target, SaveRollModifier, SaveRerollModifier)
+        super().__init__(
+            attacker, target, SaveRollModifier, SaveRerollModifier, "_save_strategy"
+        )
+
+
+class WardSave(CombatantRollEvaluator):
+    def __init__(self, attacker: Combatant, target: Combatant):
+        super().__init__(
+            attacker,
+            target,
+            WardSaveRollModifier,
+            WardSaveRerollModifier,
+            "_ward_strategy",
+        )
 
 
 class RegenerationSave(CombatantRollEvaluator):
@@ -104,4 +123,5 @@ class RegenerationSave(CombatantRollEvaluator):
             target,
             RegenerationSaveRollModifier,
             RegenerationSaveRerollModifier,
+            "_regeneration_strategy",
         )
