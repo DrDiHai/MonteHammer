@@ -4,13 +4,27 @@ an attacker hits a target."""
 from combatants.combatant import Combatant
 from dieroll import rolld6
 from strategies.roll_evaluation_strategy import RollEvaluationStrategy
+from rules.rule import RollModifierRule, RerollModifierRule
 from rules.rule import HitRollModifier, HitRerollModifier
+from rules.rule import WoundRollModifier, WoundRerollModifier
+from rules.rule import SaveRollModifier, SaveRerollModifier
+from rules.rule import RegenerationSaveRollModifier, RegenerationSaveRerollModifier
 
 
-class Hit:
-    def __init__(self, attacker: Combatant, target: Combatant):
+class CombatantRollEvaluator:
+    """Base class for evaluating combatant rolls."""
+
+    def __init__(
+        self,
+        attacker: Combatant,
+        target: Combatant,
+        roll_modifier_class: RollModifierRule,
+        reroll_modifier_class: RerollModifierRule,
+    ):
         self._attacker = attacker
         self._target = target
+        self._roll_modifiers: list[RollModifierRule] = []
+        self._reroll_modifiers: list[RerollModifierRule] = []
 
         # Retrieve strategy and modifiers from the attacker
         self._strategy: RollEvaluationStrategy = attacker._hit_strategy
@@ -19,25 +33,25 @@ class Hit:
         self._roll_modifiers = [
             m
             for m in attacker.get_offensive_modifiers()
-            if isinstance(m, HitRollModifier)
+            if isinstance(m, roll_modifier_class)
         ] + [
             m
             for m in target.get_defensive_modifiers()
-            if isinstance(m, HitRollModifier)
+            if isinstance(m, roll_modifier_class)
         ]
 
         # Combine reroll modifiers from both attacker and target
         self._reroll_modifiers = [
             m
             for m in attacker.get_offensive_modifiers()
-            if isinstance(m, HitRerollModifier)
+            if isinstance(m, reroll_modifier_class)
         ] + [
             m
             for m in target.get_defensive_modifiers()
-            if isinstance(m, HitRerollModifier)
+            if isinstance(m, reroll_modifier_class)
         ]
 
-    def hit_target(self) -> bool:
+    def evaluate_roll(self) -> bool:
         """Determine if the attacker hits the target, applying modifiers
         and allowing only one reroll."""
         # Perform the roll, apply modifiers, and check for hit
@@ -66,3 +80,28 @@ class Hit:
             if reroll_modifier.should_reroll(roll, self._attacker, self._target):
                 return True
         return False
+
+
+class Hit(CombatantRollEvaluator):
+    def __init__(self, attacker: Combatant, target: Combatant):
+        super().__init__(attacker, target, HitRollModifier, HitRerollModifier)
+
+
+class HitWound(CombatantRollEvaluator):
+    def __init__(self, attacker: Combatant, target: Combatant):
+        super().__init__(attacker, target, WoundRollModifier, WoundRerollModifier)
+
+
+class ArmourSave(CombatantRollEvaluator):
+    def __init__(self, attacker: Combatant, target: Combatant):
+        super().__init__(attacker, target, SaveRollModifier, SaveRerollModifier)
+
+
+class RegenerationSave(CombatantRollEvaluator):
+    def __init__(self, attacker: Combatant, target: Combatant):
+        super().__init__(
+            attacker,
+            target,
+            RegenerationSaveRollModifier,
+            RegenerationSaveRerollModifier,
+        )

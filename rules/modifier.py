@@ -1,6 +1,6 @@
 """This module contains the Modifier abstract base class."""
 
-from abc import ABC, abstractmethod
+from abc import ABC
 
 
 class Modifier(ABC):

@@ -1,9 +1,11 @@
 import json
 from combatants.unit import Unit
-from hit import Hit
-from hit_wound import HitWound
-from armour_save import ArmourSave
-from regeneration_save import RegenerationSave
+from combatant_roll_evaluator.combatant_roll_evaluator import (
+    Hit,
+    HitWound,
+    ArmourSave,
+    RegenerationSave,
+)
 
 SAMPLESIZE = 10000
 
@@ -24,16 +26,16 @@ if __name__ == "__main__":
             unregenerated_wounds = 0
             for _ in range(SAMPLESIZE):
                 hit = Hit(attacker, target)
-                if hit.hit_target():
+                if hit.evaluate_roll():
                     hits += 1
                 wound = HitWound(attacker, target)
-                if wound.wound_target():
+                if wound.evaluate_roll():
                     wounds += 1
                 armour_save = ArmourSave(attacker, target)
-                if armour_save.pierce_armour():
+                if armour_save.evaluate_roll():
                     unsaved_wounds += 1
                 regeneration_save = RegenerationSave(attacker, target)
-                if regeneration_save.pierce_armour():
+                if regeneration_save.evaluate_roll():
                     unregenerated_wounds += 1
             attacks = attacker.get_attacks()
             hit_rate = (hits / SAMPLESIZE) * attacks

@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from combatants.combatant import Combatant
 from rules.modifier import Modifier
 
@@ -7,15 +7,18 @@ class Rule(Modifier):
     """Abstract base class for all rules."""
 
 
-class HitRollModifier(Rule):
-    """Abstract base class for all rules to modify dice rolls."""
+class RollModifierRule(Rule):
 
     @abstractmethod
     def modify_roll(self, roll: int, attacker: Combatant, target: Combatant) -> int:
         """Modify the roll based on the specific modifier's rules."""
 
 
-class HitRerollModifier(Rule):
+class HitRollModifier(RollModifierRule):
+    pass
+
+
+class RerollModifierRule(Rule):
     """Abstract base class for all rules to determine if a reroll should be granted."""
 
     @abstractmethod
@@ -23,36 +26,24 @@ class HitRerollModifier(Rule):
         """Determine if a reroll should be granted."""
 
 
-class WoundRollModifier(Rule):
-    """Abstract base class for all rules to modify dice rolls."""
-
-    @abstractmethod
-    def modify_roll(self, roll: int, attacker: Combatant, target: Combatant) -> int:
-        """Modify the roll based on the specific modifier's rules."""
+class HitRerollModifier(RerollModifierRule):
+    pass
 
 
-class WoundRerollModifier(Rule):
-    """Abstract base class for all rules to determine if a reroll should be granted."""
-
-    @abstractmethod
-    def should_reroll(self, roll: int, attacker: Combatant, target: Combatant) -> bool:
-        """Determine if a reroll should be granted."""
+class WoundRollModifier(RollModifierRule):
+    pass
 
 
-class SaveRollModifier(Rule):
-    """Abstract base class for all rules to modify dice rolls."""
-
-    @abstractmethod
-    def modify_roll(self, roll: int, attacker: Combatant, target: Combatant) -> int:
-        """Modify the roll based on the specific modifier's rules."""
+class WoundRerollModifier(RerollModifierRule):
+    pass
 
 
-class SaveRerollModifier(Rule):
-    """Abstract base class for all rules to determine if a reroll should be granted."""
+class SaveRollModifier(RollModifierRule):
+    pass
 
-    @abstractmethod
-    def should_reroll(self, roll: int, attacker: Combatant, target: Combatant) -> bool:
-        """Determine if a reroll should be granted."""
+
+class SaveRerollModifier(RerollModifierRule):
+    pass
 
 
 class LightArmour(SaveRollModifier):
@@ -80,7 +71,7 @@ class Shield(SaveRollModifier):
 
 
 class ArmourPiercing(SaveRollModifier):
-    """Rule to modify the target's regeneration save."""
+    """Represents the AP characteristic of a weapon or rule."""
 
     def __init__(self, modifier: int):
         assert 1 <= modifier <= 6
@@ -91,36 +82,20 @@ class ArmourPiercing(SaveRollModifier):
         return roll + self._modifier
 
 
-class WardSaveRollModifier(Rule):
-    """Abstract base class for all rules to modify dice rolls."""
-
-    @abstractmethod
-    def modify_roll(self, roll: int, attacker: Combatant, target: Combatant) -> int:
-        """Modify the roll based on the specific modifier's rules."""
+class WardSaveRollModifier(RollModifierRule):
+    pass
 
 
-class WardSaveRerollModifier(Rule):
-    """Abstract base class for all rules to determine if a reroll should be granted."""
-
-    @abstractmethod
-    def should_reroll(self, roll: int, attacker: Combatant, target: Combatant) -> bool:
-        """Determine if a reroll should be granted."""
+class WardSaveRerollModifier(RerollModifierRule):
+    pass
 
 
-class RegenerationSaveRollModifier(Rule):
-    """Abstract base class for all rules to modify dice rolls."""
-
-    @abstractmethod
-    def modify_roll(self, roll: int, attacker: Combatant, target: Combatant) -> int:
-        """Modify the roll based on the specific modifier's rules."""
+class RegenerationSaveRollModifier(RollModifierRule):
+    pass
 
 
-class RegenerationSaveRerollModifier(Rule):
-    """Abstract base class for all rules to determine if a reroll should be granted."""
-
-    @abstractmethod
-    def should_reroll(self, roll: int, attacker: Combatant, target: Combatant) -> bool:
-        """Determine if a reroll should be granted."""
+class RegenerationSaveRerollModifier(RerollModifierRule):
+    pass
 
 
 class RegenerationSave(RegenerationSaveRollModifier):
