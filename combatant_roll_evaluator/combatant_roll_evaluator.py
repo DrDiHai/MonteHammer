@@ -4,12 +4,20 @@ an attacker hits a target."""
 from combatants.combatant import Combatant
 from dieroll import rolld6
 from strategies.roll_evaluation_strategy import RollEvaluationStrategy
-from rules.rule import RollModifierRule, RerollModifierRule
-from rules.rule import HitRollModifier, HitRerollModifier
-from rules.rule import WoundRollModifier, WoundRerollModifier
-from rules.rule import SaveRollModifier, SaveRerollModifier
-from rules.rule import WardSaveRollModifier, WardSaveRerollModifier
-from rules.rule import RegenerationSaveRollModifier, RegenerationSaveRerollModifier
+from rules.rule import RollModifierRule, RerollModifierRule, AutoSuccessModifierRule
+from rules.rule import HitRollModifier, HitRerollModifier, AutoHitModifier
+from rules.rule import WoundRollModifier, WoundRerollModifier, AutoWoundModifier
+from rules.rule import SaveRollModifier, SaveRerollModifier, AutoPenetrateArmourModifier
+from rules.rule import (
+    WardSaveRollModifier,
+    WardSaveRerollModifier,
+    AutoPenetrateWardModifier,
+)
+from rules.rule import (
+    RegenerationSaveRollModifier,
+    RegenerationSaveRerollModifier,
+    AutoPenetrateRegenerationModifier,
+)
 
 
 class CombatantRollEvaluator:
@@ -21,6 +29,7 @@ class CombatantRollEvaluator:
         target: Combatant,
         roll_modifier_class: RollModifierRule,
         reroll_modifier_class: RerollModifierRule,
+        auto_success_modifier: AutoSuccessModifierRule,
         strategy_name: str,
     ):
         self._attacker = attacker
@@ -53,11 +62,26 @@ class CombatantRollEvaluator:
             if isinstance(m, reroll_modifier_class)
         ]
 
+        self._auto_success_modifiers = [
+            m
+            for m in attacker.get_offensive_modifiers()
+            if isinstance(m, auto_success_modifier)
+        ] + [
+            m
+            for m in target.get_defensive_modifiers()
+            if isinstance(m, auto_success_modifier)
+        ]
+
     def evaluate_roll(self) -> bool:
         """Determine if the attacker hits the target, applying modifiers
         and allowing only one reroll."""
         # Perform the roll, apply modifiers, and check for hit
         roll = self._roll_and_apply_modifiers()
+
+        # Check for auto success
+        for auto_success_modifier in self._auto_success_modifiers:
+            if auto_success_modifier.is_auto_success(self._attacker, self._target):
+                return True
 
         if self._strategy.evaluate_roll(self._attacker, self._target, roll):
             return True
@@ -87,21 +111,36 @@ class CombatantRollEvaluator:
 class Hit(CombatantRollEvaluator):
     def __init__(self, attacker: Combatant, target: Combatant):
         super().__init__(
-            attacker, target, HitRollModifier, HitRerollModifier, "_hit_strategy"
+            attacker,
+            target,
+            HitRollModifier,
+            HitRerollModifier,
+            AutoHitModifier,
+            "_hit_strategy",
         )
 
 
 class HitWound(CombatantRollEvaluator):
     def __init__(self, attacker: Combatant, target: Combatant):
         super().__init__(
-            attacker, target, WoundRollModifier, WoundRerollModifier, "_wound_strategy"
+            attacker,
+            target,
+            WoundRollModifier,
+            WoundRerollModifier,
+            AutoWoundModifier,
+            "_wound_strategy",
         )
 
 
 class ArmourSave(CombatantRollEvaluator):
     def __init__(self, attacker: Combatant, target: Combatant):
         super().__init__(
-            attacker, target, SaveRollModifier, SaveRerollModifier, "_save_strategy"
+            attacker,
+            target,
+            SaveRollModifier,
+            SaveRerollModifier,
+            AutoPenetrateArmourModifier,
+            "_save_strategy",
         )
 
 
@@ -112,6 +151,7 @@ class WardSave(CombatantRollEvaluator):
             target,
             WardSaveRollModifier,
             WardSaveRerollModifier,
+            AutoPenetrateWardModifier,
             "_ward_strategy",
         )
 
@@ -123,5 +163,6 @@ class RegenerationSave(CombatantRollEvaluator):
             target,
             RegenerationSaveRollModifier,
             RegenerationSaveRerollModifier,
+            AutoPenetrateRegenerationModifier,
             "_regeneration_strategy",
         )

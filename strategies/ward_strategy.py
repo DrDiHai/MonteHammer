@@ -12,6 +12,8 @@ class DefaultWardStrategy(RollEvaluationStrategy):
         target_number = self.get_target_number()
         return roll >= target_number
 
-    def get_target_number(self) -> int:
+    def get_target_number(
+        self, attacker: Combatant = None, target: Combatant = None
+    ) -> int:
         """Calculate the target number based on weapon skills."""
         return 1

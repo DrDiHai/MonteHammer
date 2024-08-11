@@ -22,7 +22,8 @@
                 {
                     "class": "ArmourPiercing",
                     "modifier": 1
-                }
+                },
+                "CleavingBlow"
             ]
         },
         {
