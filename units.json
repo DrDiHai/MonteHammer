@@ -1,6 +1,31 @@
 {
     "units": [
         {
+            "name": "Tomb Guard",
+            "weapon_skill": 3,
+            "ballistic_skill": 3,
+            "strength": 4,
+            "toughness": 4,
+            "wounds": 1,
+            "initiative": 2,
+            "attacks": 1,
+            "points": 10,
+            "defensiveModifiers": [
+                "LightArmour",
+                "Shield",
+                {
+                    "class": "RegenerationSave",
+                    "threshold": 6
+                }
+            ],
+            "offensiveModifiers": [
+                {
+                    "class": "ArmourPiercing",
+                    "modifier": 1
+                }
+            ]
+        },
+        {
             "name": "Skeleton Warrior",
             "weapon_skill": 2,
             "ballistic_skill": 2,

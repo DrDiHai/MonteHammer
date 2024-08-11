@@ -79,6 +79,18 @@ class Shield(SaveRollModifier):
         return roll - 1
 
 
+class ArmourPiercing(SaveRollModifier):
+    """Rule to modify the target's regeneration save."""
+
+    def __init__(self, modifier: int):
+        assert 1 <= modifier <= 6
+        self._modifier = modifier
+
+    def modify_roll(self, roll: int, attacker: Combatant, target: Combatant) -> int:
+        """Modify the roll based on the regeneration save rules."""
+        return roll + self._modifier
+
+
 class WardSaveRollModifier(Rule):
     """Abstract base class for all rules to modify dice rolls."""
 

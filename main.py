@@ -51,9 +51,12 @@ if __name__ == "__main__":
             ) * attacks
 
             # Calculate the efficiency
-            points = attacker._points  # Dynamically added cost from JSON
+
+            survival_rate = unregenerated_rate / target._wounds
+            destroyed_points = survival_rate * target._points
+            deployed_points = attacker._points  # Dynamically added cost from JSON
             efficiency = (
-                unregenerated_rate / points
+                destroyed_points / deployed_points
             ) * 100  # Added * 100 for better readability
 
             # Improved print statement for better readability and efficiency display
