@@ -62,6 +62,30 @@
                     "threshold": 6
                 }
             ]
+        },
+        {
+            "name": "Ushabti",
+            "weapon_skill": 4,
+            "ballistic_skill": 3,
+            "strength": 4,
+            "toughness": 4,
+            "wounds": 3,
+            "initiative": 2,
+            "attacks": 3,
+            "points": 49,
+            "defensiveModifiers": [
+                "HeavyArmour",
+                {
+                    "class": "RegenerationSave",
+                    "threshold": 6
+                }
+            ],
+            "offensiveModifiers": [
+                {
+                    "class": "ArmourPiercing",
+                    "modifier": 3
+                }
+            ]
         }
     ]
 }
