@@ -1,7 +1,8 @@
 from flask import Flask, jsonify, request
-import json
-from main import simulate_combat
-from combatants.unit import Unit
+
+# import json
+# from main import simulate_combat
+# from combatants.unit import Unit
 
 # Assuming SAMPLESIZE and other related functions are defined elsewhere
 SAMPLESIZE = 10000
@@ -10,15 +11,31 @@ TIE_THRESHOLD = 0.05  # 5% threshold for declaring a tie
 app = Flask(__name__)
 
 # Load units from JSON file
-with open("units.json", encoding="utf-8") as file:
-    units_data = json.load(file)
-    units = [Unit.from_json(unit_data) for unit_data in units_data["units"]]
+# with open("units.json", encoding="utf-8") as file:
+#    units_data = json.load(file)
+#    units = [Unit.from_json(unit_data) for unit_data in units_data["units"]]
 
 # Create a dictionary for easy lookup by name
-units_dict = {unit.get_name(): unit for unit in units}
+# units_dict = {unit.get_name(): unit for unit in units}
 
 
-@app.route("/evaluate", methods=["GET"])
+@app.route("/")
+def index():
+    return (
+        "<h1>Ahoy, ye brave soul!</h1>"
+        "<p>Welcome aboard the HMS Combat Evaluator, where units clash "
+        "in glorious battle upon the digital seas!</p>"
+        "<p>If ye be seekin' to test the mettle of yer warriors, set yer course "
+        "for the <strong>/evaluate</strong> endpoint and send forth yer chosen units "
+        "with the <strong>attacker</strong> and <strong>target</strong> parameters!</p>"
+        "<p>Only the mightiest shall prevail, or perhaps... it’ll be a tie, "
+        "with honor shared ‘tween two fierce foes.</p>"
+        "<p>So weigh anchor and prepare for battle, but know this: on these seas, "
+        "there be no guarantees!</p>"
+    )
+
+
+""" @app.route("/evaluate", methods=["GET"])
 def evaluate_units():
     # Get unit names from query parameters
     attacker_name = request.args.get("attacker")
@@ -61,3 +78,7 @@ def evaluate_units():
             "winner": winner,
         }
     )
+ """
+
+if __name__ == "__main__":
+    app.run()

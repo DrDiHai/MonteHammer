@@ -1,1 +1,1 @@
-web: gunicorn -w 4 -b 0.0.0.0:$PORT your_flask_script:app
+gunicorn --bind=0.0.0.0 --timeout 600 app:app
