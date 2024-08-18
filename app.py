@@ -1,22 +1,14 @@
 from flask import Flask, jsonify, request
 
-# import json
-# from main import simulate_combat
-# from combatants.unit import Unit
+ import json
+ from main import simulate_combat
+ from combatants.unit import Unit
 
 # Assuming SAMPLESIZE and other related functions are defined elsewhere
 SAMPLESIZE = 10000
 TIE_THRESHOLD = 0.05  # 5% threshold for declaring a tie
 
 app = Flask(__name__)
-
-# Load units from JSON file
-# with open("units.json", encoding="utf-8") as file:
-#    units_data = json.load(file)
-#    units = [Unit.from_json(unit_data) for unit_data in units_data["units"]]
-
-# Create a dictionary for easy lookup by name
-# units_dict = {unit.get_name(): unit for unit in units}
 
 
 @app.route("/")
@@ -35,8 +27,17 @@ def index():
     )
 
 
-""" @app.route("/evaluate", methods=["GET"])
+@app.route("/evaluate", methods=["GET"])
 def evaluate_units():
+    
+    # Load units from JSON file
+    with open("units.json", encoding="utf-8") as file:
+        units_data = json.load(file)
+        units = [Unit.from_json(unit_data) for unit_data in units_data["units"]]
+
+    # Create a dictionary for easy lookup by name
+    units_dict = {unit.get_name(): unit for unit in units}
+
     # Get unit names from query parameters
     attacker_name = request.args.get("attacker")
     target_name = request.args.get("target")
@@ -78,7 +79,7 @@ def evaluate_units():
             "winner": winner,
         }
     )
- """
+
 
 if __name__ == "__main__":
     app.run()
