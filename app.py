@@ -1,8 +1,7 @@
 from flask import Flask, jsonify, request
-
- import json
- from main import simulate_combat
- from combatants.unit import Unit
+import json
+from main import simulate_combat
+from combatants.unit import Unit
 
 # Assuming SAMPLESIZE and other related functions are defined elsewhere
 SAMPLESIZE = 10000
@@ -27,9 +26,9 @@ def index():
     )
 
 
-""" @app.route("/evaluate", methods=["GET"])
+@app.route("/evaluate", methods=["GET"])
 def evaluate_units():
-    
+
     # Load units from JSON file
     with open("units.json", encoding="utf-8") as file:
         units_data = json.load(file)
@@ -79,7 +78,7 @@ def evaluate_units():
             "winner": winner,
         }
     )
- """
+
 
 if __name__ == "__main__":
     app.run()
