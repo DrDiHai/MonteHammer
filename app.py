@@ -27,7 +27,7 @@ def index():
     )
 
 
-@app.route("/evaluate", methods=["GET"])
+""" @app.route("/evaluate", methods=["GET"])
 def evaluate_units():
     
     # Load units from JSON file
@@ -79,7 +79,7 @@ def evaluate_units():
             "winner": winner,
         }
     )
-
+ """
 
 if __name__ == "__main__":
     app.run()
