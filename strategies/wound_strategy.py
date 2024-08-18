@@ -2,6 +2,7 @@
 
 from strategies.roll_evaluation_strategy import RollEvaluationStrategy
 from combatants.combatant import Combatant
+from rules.rule import StrengthModifier, ToughnessModifier
 
 
 class DefaultWoundStrategy(RollEvaluationStrategy):
@@ -14,8 +15,20 @@ class DefaultWoundStrategy(RollEvaluationStrategy):
 
     def get_target_number(self, attacker: Combatant, target: Combatant) -> int:
         """Calculate the target number based on attacker strength and target toughness."""
-        attacker_strength = attacker.get_strength()
-        target_toughness = target.get_toughness()
+        attacker_strength = attacker.get_strength() + sum(
+            [
+                modifier.get_modifier(attacker)
+                for modifier in attacker._offensive_modifiers
+                if isinstance(modifier, StrengthModifier)
+            ]
+        )
+        target_toughness = target.get_toughness() + sum(
+            [
+                modifier.get_modifier(target)
+                for modifier in target._defensive_modifiers
+                if isinstance(modifier, ToughnessModifier)
+            ]
+        )
 
         if target_toughness > attacker_strength + 5:
             return 7

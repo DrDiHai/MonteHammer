@@ -1,0 +1,1 @@
+web: python azure_config.py

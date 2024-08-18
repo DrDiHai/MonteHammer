@@ -150,3 +150,36 @@ class RegenerationSave(RegenerationSaveRollModifier):
     def modify_roll(self, roll: int, attacker: Combatant, target: Combatant) -> int:
         """Modify the roll based on the regeneration save rules."""
         return roll - (self._threshold - 5)
+
+
+class AttributeModifier(Rule):
+
+    @abstractmethod
+    def get_modifier(self, unit: Combatant) -> int:
+        return 0
+
+
+class StrengthModifier(AttributeModifier):
+    pass
+
+
+class StrengthBonus(StrengthModifier):
+
+    def __init__(self, modifier: int):
+        self._bonus = modifier
+
+    def get_modifier(self, unit: Combatant) -> int:
+        return self._bonus
+
+
+class ToughnessModifier(AttributeModifier):
+    pass
+
+
+class ToughnessBonus(ToughnessModifier):
+
+    def __init__(self, modifier: int):
+        self._bonus = modifier
+
+    def get_modifier(self, unit: Combatant) -> int:
+        return self._bonus
